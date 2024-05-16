@@ -65,7 +65,7 @@ async function searchImages(evt) {
     list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     lightbox.refresh();
     totalPages = Math.ceil(data.totalHits / 15);
-    if (page <= totalPages) {
+    if (page < totalPages || data.hits.length < 15) { 
       btnShow();
     }
     form.reset();
