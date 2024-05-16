@@ -53,6 +53,7 @@ async function searchImages(evt) {
 
   try {
     const data = await getInform(searchInput, page);
+
     if (data.hits.length === 0) {
       iziToast.warning({
         title: '',
@@ -62,10 +63,22 @@ async function searchImages(evt) {
       });
       return;
     }
+
     list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     lightbox.refresh();
     totalPages = Math.ceil(data.totalHits / 15);
-    if (page < totalPages || data.hits.length < 15) { 
+
+   
+    if (data.hits.length < 15) {
+      btnShow(); 
+      iziToast.info({
+        position: 'topRight',
+        message: "We're sorry, but you've reached the end of search results.",
+      });
+      return;
+    }
+
+    if (page <= totalPages) {
       btnShow();
     }
     form.reset();
