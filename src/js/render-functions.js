@@ -1,24 +1,17 @@
-export function createMarkup(arr) {
-  return arr
-    .map(
-      ({
-        webformatURL,
-        tags,
-        largeImageURL,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) =>
-        `<li class='card'>
-        <a class="gallery-link" href="${largeImageURL}"><img class='image' src='${webformatURL}' alt='${tags}'></a>
-        <div class='description'>
-        <div class='title-text'><h4 class='title'>Likes</h4><p class='text'>${likes}</p></div>
-        <div class='title-text'><h4 class='title'>Views</h4><p class='text'>${views}</p></div>
-        <div class='title-text'><h4 class='title'>Comments</h4><p class='text'>${comments}</p></div>
-        <div class='title-text'><h4 class='title'>Downloads</h4><p class='text'>${downloads}</p></div>
-        </div>
-        </li>`
-    )
+export function renderElements(images) {
+  return images
+    .map(img => {
+      return `<li class="gallery-item">
+  <a href="${img.largeImageURL}"
+    ><img src="${img.webformatURL}" alt="${img.tags}" class="photo"
+  /></a>
+  <div class="gallery-item-container">
+<div class="label-container"><span class="label">Likes</span><span class="value">${img.likes}</span></div>
+    <div class="label-container"><span class="label">Views</span><span class="value">${img.views}</span></div>
+    <div class="label-container"><span class="label">Comments</span><span class="value">${img.comments}</span></div>
+    <div class="label-container"><span class="label">Downloads</span><span class="value">${img.downloads}</span></div>
+  </div>
+</li>`;
+    })
     .join('');
 }
