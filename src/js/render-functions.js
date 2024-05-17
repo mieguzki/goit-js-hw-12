@@ -1,33 +1,24 @@
 export function createMarkup(arr) {
-    return arr
-      .map(
-        ({
-          webformatURL,
-          largeImageURL,
-          tags,
-          likes,
-          views,
-          comments,
-          downloads,
-        }) => `
-      <li class="gallery-item">
-        <div class="gallery">
-         <a class="gallery-link" href="${largeImageURL}">
-         <img class="gallery-image"
-           src="${webformatURL}"
-           alt="${tags}"
-          />
-         </a>
-         
-        <ul class="card-description">
-          <li class="description">Likes <span class="accent">${likes} </span></li>
-          <li class="description">Views <span class="accent">${views} </span></li>
-          <li class="description">Comments <span class="accent">${comments} </span></li>
-          <li class="description">Downloads <span class="accent">${downloads} </span></li>
-        </ul>
+  return arr
+    .map(
+      ({
+        webformatURL,
+        tags,
+        largeImageURL,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) =>
+        `<li class='card'>
+        <a class="gallery-link" href="${largeImageURL}"><img class='image' src='${webformatURL}' alt='${tags}'></a>
+        <div class='description'>
+        <div class='title-text'><h4 class='title'>Likes</h4><p class='text'>${likes}</p></div>
+        <div class='title-text'><h4 class='title'>Views</h4><p class='text'>${views}</p></div>
+        <div class='title-text'><h4 class='title'>Comments</h4><p class='text'>${comments}</p></div>
+        <div class='title-text'><h4 class='title'>Downloads</h4><p class='text'>${downloads}</p></div>
         </div>
-      </li>
-      `
-      )
-      .join('');
-  }
+        </li>`
+    )
+    .join('');
+}
