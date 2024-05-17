@@ -73,16 +73,16 @@ async function searchImages(evt) {
     lightbox.refresh();
     totalPages = Math.ceil(data.totalHits / 15);
 
-    if (data.hits.length < 15) {
+    if (data.hits.length < 15 || page === totalPages) {
       btnShow(false);
       iziToast.info({
         position: 'topRight',
         message: "We're sorry, but you've reached the end of search results.",
       });
-      return;
+    } else {
+      btnShow(true);
     }
 
-    btnShow(page < totalPages);
     form.reset();
   } catch (error) {
     iziToast.error({
@@ -104,12 +104,14 @@ async function imagesMore() {
     list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     lightbox.refresh();
 
-    btnShow(page < totalPages);
-    if (page >= totalPages) {
+    if (page === totalPages || data.hits.length < 15) {
+      btnShow(false);
       iziToast.info({
         position: 'topRight',
         message: "We're sorry, but you've reached the end of search results.",
       });
+    } else {
+      btnShow(true);
     }
   } catch (error) {
     iziToast.error({
