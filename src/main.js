@@ -5,8 +5,6 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 import { searchImages } from './js/pixabay-api.js';
-import { toggleLoader } from './js/pixabay-api.js';
-import { toggleLoader2 } from './js/pixabay-api.js';
 import { createMarkup } from './js/render-functions.js';
 
 const form = document.querySelector('.form');
@@ -46,26 +44,22 @@ async function handleClick(event) {
     hideLoadMore();
     saveToLocalStorage('searchInputValue', searchInputValue);
     try {
+      toggleLoader(true);
       const response = await searchImages(searchInputValue, page);
       if (response.data.hits.length === 0) {
-        toggleLoader();
-        showErrorToast(
-          'Sorry, there are no images matching your search query. Please try again!'
-        );
+        showErrorToast('Sorry, there are no images matching your search query. Please try again!');
       } else {
-        toggleLoader();
         list.insertAdjacentHTML('beforeend', createMarkup(response.data.hits));
         lightbox.refresh();
-        const totalPages = Math.ceil(
-          response.data.totalHits / response.config.params.per_page
-        );
+        const totalPages = Math.ceil(response.data.totalHits / response.config.params.per_page);
         checkImageLoad(response, totalPages);
       }
       form.reset();
       submitBtn.disabled = true;
     } catch (error) {
-      toggleLoader();
       showErrorToast(`${error}`);
+    } finally {
+      toggleLoader(false);
     }
   }
 }
@@ -74,18 +68,17 @@ async function loadClick() {
   hideLoadMore();
   const searchInputValue = getFromLocalStorage('searchInputValue');
   try {
+    toggleLoader(true);
     const response = await searchImages(searchInputValue, page);
-    const totalPages = Math.ceil(
-      response.data.totalHits / response.config.params.per_page
-    );
-    toggleLoader2();
+    const totalPages = Math.ceil(response.data.totalHits / response.config.params.per_page);
     list.insertAdjacentHTML('beforeend', createMarkup(response.data.hits));
     lightbox.refresh();
     scroll();
     checkImageLoad(response, totalPages);
   } catch (error) {
-    toggleLoader2();
     showErrorToast(`${error}`);
+  } finally {
+    toggleLoader(false);
   }
 }
 
@@ -131,12 +124,21 @@ function checkImageLoad(response, totalPages) {
     if (allImagesLoaded) {
       clearInterval(checkImagesInterval);
       if (response.config.params.page >= totalPages) {
-        return showWarningToast();
+        showWarningToast();
       } else {
         showLoadMore();
       }
     }
   }, 50);
+}
+
+function toggleLoader(isLoading) {
+  const loader = document.querySelector('.loader');
+  if (isLoading) {
+    loader.classList.add('is-visible');
+  } else {
+    loader.classList.remove('is-visible');
+  }
 }
 
 const lightbox = new SimpleLightbox('.list a', {
