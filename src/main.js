@@ -19,8 +19,14 @@ function loaderShow() {
   loader.classList.toggle('is-visible');
 }
 
-function btnShow() {
-  loadMoreBtn.classList.toggle('load-more');
+function btnShow(show) {
+  if (show) {
+    loadMoreBtn.classList.add('load-more');
+    loadMoreBtn.classList.remove('btn-hidden');
+  } else {
+    loadMoreBtn.classList.remove('load-more');
+    loadMoreBtn.classList.add('btn-hidden');
+  }
 }
 
 const lightbox = new SimpleLightbox('.images a', {
@@ -57,8 +63,7 @@ async function searchImages(evt) {
     if (data.hits.length === 0) {
       iziToast.warning({
         title: '',
-        message:
-          'Sorry, there are no images matching your search query. Please try again!',
+        message: 'Sorry, there are no images matching your search query. Please try again!',
         position: 'topRight',
       });
       return;
@@ -68,9 +73,8 @@ async function searchImages(evt) {
     lightbox.refresh();
     totalPages = Math.ceil(data.totalHits / 15);
 
-   
     if (data.hits.length < 15) {
-      btnShow(); 
+      btnShow(false);
       iziToast.info({
         position: 'topRight',
         message: "We're sorry, but you've reached the end of search results.",
@@ -78,9 +82,7 @@ async function searchImages(evt) {
       return;
     }
 
-    if (page <= totalPages) {
-      btnShow();
-    }
+    btnShow(page < totalPages);
     form.reset();
   } catch (error) {
     iziToast.error({
@@ -102,9 +104,9 @@ async function imagesMore() {
     list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     lightbox.refresh();
 
-    if (page === totalPages) {
-      btnShow();
-      return iziToast.info({
+    btnShow(page < totalPages);
+    if (page >= totalPages) {
+      iziToast.info({
         position: 'topRight',
         message: "We're sorry, but you've reached the end of search results.",
       });
